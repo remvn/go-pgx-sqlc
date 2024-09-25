@@ -13,7 +13,7 @@ type Database struct {
 	Query *sqlc.Queries
 }
 
-func MakeDatabase(connStr string) *Database {
+func NewDatabase(connStr string) *Database {
 	// this only create pgxpool struct, you may need to ping the database to
 	// initialize a connection and check availability
 	pool, err := pgxpool.New(context.Background(), connStr)
