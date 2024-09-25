@@ -9,14 +9,7 @@ import (
 )
 
 type Author struct {
-	ID   int32
-	Name string
-	Bio  pgtype.Text
-}
-
-type Book struct {
-	ID          int32
-	AuthorID    pgtype.Int4
-	Name        string
-	Description pgtype.Text
+	ID   int32       `db:"id" json:"id"`
+	Name string      `db:"name" json:"name"`
+	Bio  pgtype.Text `db:"bio" json:"bio"`
 }
