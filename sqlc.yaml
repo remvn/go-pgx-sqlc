@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "sqlc/query.sql"
+    schema: "sqlc/schema.sql"
+    gen:
+      go:
+        package: "sqlc" # Package name
+        out: "database/sqlc" # Output folder
+        sql_package: "pgx/v5" # Use sql types provided by pgx
