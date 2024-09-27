@@ -171,22 +171,20 @@ func pgxSelect(db *database.Database, id int) (Author, error) {
 }
 
 func pgxSelectAllId(db *database.Database) ([]int, error) {
-	// notice that I dont select id
-	// and use RowToStructByNameLax to allows some of the column missing
-	idArr := []int{}
 	query := `SELECT id from author`
 
 	rows, err := db.Pool.Query(context.Background(), query)
 	if err != nil {
-		return nil, err
+		return []int{}, err
 	}
 	defer rows.Close()
 
+	idArr := []int{}
 	idArr, err = pgx.AppendRows(idArr, rows, pgx.RowTo[int])
-	// use this if you dont need append to existing slice
+	// use this if you dont need appending to slice
 	// idArr, err := pgx.CollectRows(rows, pgx.RowTo[int])
 	if err != nil {
-		return nil, err
+		return []int{}, err
 	}
 
 	return idArr, nil
