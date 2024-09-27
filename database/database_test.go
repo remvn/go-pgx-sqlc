@@ -105,6 +105,10 @@ func TestPgxBulkInsert(t *testing.T) {
 	copyCount, err := pgxCopyInsert(db, authors)
 	require.NoError(t, err, "unable to copy")
 	require.Equal(t, int(copyCount), len(authors))
+
+	idArr, err := pgxSelectAllId(db)
+	require.NoError(t, err, "unable to get author ids")
+	require.Equal(t, len(authors), len(idArr))
 }
 
 // this struct is for demonstration of
@@ -164,4 +168,26 @@ func pgxSelect(db *database.Database, id int) (Author, error) {
 	defer rows.Close()
 
 	return pgx.CollectOneRow(rows, pgx.RowToStructByNameLax[Author])
+}
+
+func pgxSelectAllId(db *database.Database) ([]int, error) {
+	// notice that I dont select id
+	// and use RowToStructByNameLax to allows some of the column missing
+	idArr := []int{}
+	query := `SELECT id from author`
+
+	rows, err := db.Pool.Query(context.Background(), query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	idArr, err = pgx.AppendRows(idArr, rows, pgx.RowTo[int])
+	// use this if you dont need append to existing slice
+	// idArr, err := pgx.CollectRows(rows, pgx.RowTo[int])
+	if err != nil {
+		return nil, err
+	}
+
+	return idArr, nil
 }
